@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*                                                      :+:      :+:    :+:   */
+/*   server.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ktasan <ktasan@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ktasan <ktasan@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/15 02:03:16 by ktasan            #+#    #+#             */
-/*   Updated: 2025/11/15 03:34:13 by ktasan           ###   ########.fr       */
+/*   Created: 2025/11/15 04:00:00 by ktasan            #+#    #+#             */
+/*   Updated: 2025/11/15 04:30:00 by ktasan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void	ft_putnbr(int n)
 {
-	char buf[12];
-	int i;
+	char	buf[12];
+	int		i;
 
 	i = 0;
 	if (n == 0)
@@ -38,12 +38,6 @@ static void	ft_putnbr(int n)
 	write(1, "\n", 1);
 }
 
-static void	send_ack(pid_t pid)
-{
-	if (pid > 0)
-		kill(pid, SIGUSR1);
-}
-
 void	handler(int sig, siginfo_t *info, void *ctx)
 {
 	static unsigned char	c = 0;
@@ -51,18 +45,13 @@ void	handler(int sig, siginfo_t *info, void *ctx)
 	static pid_t			pid = 0;
 
 	(void)ctx;
-	if (pid == 0)
-		pid = info->si_pid;
-	if (info->si_pid != pid)
+	if (pid != info->si_pid)
 	{
 		c = 0;
 		bits = 0;
 		pid = info->si_pid;
 	}
-	if (sig == SIGUSR1)
-		c = (c << 1) | 0;
-	else
-		c = (c << 1) | 1;
+	c = (c << 1) | (sig == SIGUSR2);
 	bits++;
 	if (bits == 8)
 	{
@@ -73,7 +62,7 @@ void	handler(int sig, siginfo_t *info, void *ctx)
 		c = 0;
 		bits = 0;
 	}
-	send_ack(info->si_pid);
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
