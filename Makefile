@@ -1,23 +1,19 @@
+NAME_S = server
+NAME_C = client
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude
+CFLAGS = -Wall -Wextra -Werror
 
-SRCS_SERVER = src/server.c
-SRCS_CLIENT = src/client.c
+all: $(NAME_S) $(NAME_C)
 
-NAME_SERVER = server
-NAME_CLIENT = client
+$(NAME_S): server.c
+	$(CC) $(CFLAGS) server.c -o $(NAME_S)
 
-all: $(NAME_SERVER) $(NAME_CLIENT)
-
-$(NAME_SERVER): $(SRCS_SERVER)
-	$(CC) $(CFLAGS) $(SRCS_SERVER) -o $(NAME_SERVER)
-
-$(NAME_CLIENT): $(SRCS_CLIENT)
-	$(CC) $(CFLAGS) $(SRCS_CLIENT) -o $(NAME_CLIENT)
+$(NAME_C): client.c
+	$(CC) $(CFLAGS) client.c -o $(NAME_C)
 
 clean:
-	rm -f $(NAME_SERVER) $(NAME_CLIENT)
+	rm -f $(NAME_S) $(NAME_C)
 
-re: clean all
+fclean: clean
 
-.PHONY: all clean re
+re: fclean all
