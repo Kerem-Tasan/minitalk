@@ -12,6 +12,8 @@
 
 #include "minitalk.h"
 
+volatile sig_atomic_t	g_ack = 0;
+
 static void	ack(int sig)
 {
 	(void)sig;

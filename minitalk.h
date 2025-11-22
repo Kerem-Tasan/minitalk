@@ -19,6 +19,5 @@
 # include <unistd.h>		
 # include <stdlib.h>	
 
-volatile sig_atomic_t	g_ack = 0;
 void	handler(int sig, siginfo_t *info, void *ctx);
 #endif
